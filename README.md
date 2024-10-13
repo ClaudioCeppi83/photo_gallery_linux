@@ -69,3 +69,21 @@ Implement a directory tree view for easier navigation.
 Add support for more image formats.
 
 Improve error handling and user feedback.
+
+## License
+
+This project is licensed under the **GNU Affero General Public License (AGPL) v3.0**. See the [full text of the GNU Affero General Public License (AGPL) v3.0](https://www.gnu.org/licenses/agpl-3.0.txt) for details.
+
+### GNU Affero General Public License (AGPL) v3.0
+
+The GNU Affero General Public License (AGPL) is a strong copyleft license that ensures the software remains free and open-source. It requires that any modifications or derivative works be shared under the same license. Additionally, it includes a provision that requires users who interact with the software over a network to have access to the source code.
+
+### Additional Terms
+
+1. **Philosophy and Brand Image**: The philosophy and brand image of this software must be maintained in any derivative works. Any changes to the software's core philosophy or brand image require explicit written permission from the original author.
+
+2. **Naming Convention**: The name of the software may not be changed without explicit written permission from the original author. If you create a variation of this software, you must use a suffix to differentiate it from the original. For example, "Photo Gallery Plus" or "Photo Gallery Extended".
+
+### No Warranty
+
+This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
