@@ -25,8 +25,8 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/yourusername/photo-gallery.git
-   cd photo-gallery
+   git@github.com:ClaudioCeppi83/photo_gallery_linux.git
+   cd photo_gallery_linux
 
 2. **Compile the program**:
 make
