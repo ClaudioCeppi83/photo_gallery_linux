@@ -1,5 +1,3 @@
-write all this in a single readme markdown:
-
 # Photo Gallery v0.1
 
 ## Overview
