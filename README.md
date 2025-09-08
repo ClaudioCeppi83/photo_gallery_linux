@@ -1,15 +1,20 @@
-# Photo Gallery v0.1
+# Photo Gallery v0.2.1-alpha
 
 ## Overview
 
-Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. The application provides basic navigation features to view images and displays a message if no images are found in the selected directory.
+Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. This version introduces significant improvements in memory management, error handling, and image format flexibility, along with a more robust code structure.
 
 ## Features
 
 - **Directory Selection**: Users can choose a directory containing images.
 - **Image Navigation**: Users can navigate through images using "Next" and "Previous" buttons.
-- **Message Display**: If no images are found in the selected directory, a message dialog is displayed.
+- **Image Zoom**: Users can zoom in and out of images.
+- **Message Display**: Displays "No image available" text directly in the viewing area if no images are found or if an image fails to load.
 - **Window Title Update**: The window title is updated to show the current directory.
+- **Dynamic Image Format Support**: Automatically detects and supports all image formats recognized by GdkPixbuf.
+- **Improved Error Handling**: Robust error checking for image loading operations, preventing crashes and providing informative warnings.
+- **Efficient Memory Management**: Utilizes `GPtrArray` for optimized handling of image file lists.
+- **Modular Code Structure**: Encapsulates application state in a dedicated structure, enhancing code organization and maintainability.
 
 ## Installation
 
@@ -21,52 +26,72 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 
 ### Build Instructions
 
-1. **Clone the repository**:
-   ```sh
-   git@github.com:ClaudioCeppi83/photo_gallery_linux.git
-   cd photo_gallery_linux
+1.  **Clone the repository** (or initialize a new one if starting fresh):
+    ```sh
+    git clone git@github.com:ClaudioCeppi83/photo_gallery_linux.git # If cloning
+    cd photo_gallery_linux
+    ```
+    If you are starting a new repository, you would initialize it:
+    ```sh
+    git init
+    git add .
+    git commit -m "Initial commit"
+    git branch -M main
+    git remote add origin <YOUR_REPOSITORY_URL>
+    git push -u origin main
+    ```
 
-2. **Compile the program**:
-make
+2.  **Compile the program**:
+    ```sh
+    make
+    ```
 
-3. **Run the program**:
-./photo_gallery
+3.  **Run the program**:
+    ```sh
+    ./photo_gallery
+    ```
 
 ## Usage:
 
-1. **Choose Directory**: Click the "Choose Directory" button to select a directory containing images.
+1.  **Choose Directory**: Click the "Choose Directory" button to select a directory containing images.
+    *   **Note**: If no images are found in the selected directory, or if an image cannot be loaded, a "No image available" message will be displayed in the viewing area.
 
-2. **Navigate Images**: Use the "Next" and "Previous" buttons to navigate through the images.
+2.  **Navigate Images**: Use the "Next" and "Previous" buttons to navigate through the images.
 
-**Note**: If no images are found in the selected directory, a message dialog will appear.
+3.  **Zoom Images**: Use the "Zoom In" and "Zoom Out" buttons to adjust the image view.
 
 ## Code Structure:
 
-**gallery.h**: Header file containing function prototypes and global variables.
-
-**gallery.c**: Source file containing the main logic for loading images, navigation, and directory selection.
-
-**interface.h**: Header file for the user interface.
-
-**interface.c**: Source file for the user interface.
-
-**main.c**: Main entry point of the application.
-
-**Makefile**: Makefile for compiling the program.
+- **`gallery.h`**: Header file containing the `AppState` structure definition and function prototypes for core gallery logic.
+- **`gallery.c`**: Source file containing the main logic for loading images (with dynamic format detection and efficient memory management), navigation, and directory selection.
+- **`interface.h`**: Header file for the user interface components and related function prototypes.
+- **`interface.c`**: Source file for handling user interface interactions, including image drawing (with "No image available" display) and zoom functionality.
+- **`main.c`**: Main entry point of the application, responsible for initializing GTK, setting up the `AppState`, and connecting signals.
+- **`Makefile`**: Makefile for compiling the program.
 
 ## Known Issues:
 
-The application currently does not handle large directories efficiently.
-
-Error handling for file operations is minimal.
+- The application currently does not handle large directories efficiently.
 
 ## Future Work:
 
-Implement a directory tree view for easier navigation.
+- Implement a directory tree view for easier navigation.
 
-Add support for more image formats.
+## Changelog
 
-Improve error handling and user feedback.
+### v0.2.1-alpha (2025-09-08)
+
+- **Features:**
+    - Implemented dynamic detection and support for all GdkPixbuf-recognized image formats.
+    - Added image zoom functionality (Zoom In/Out).
+- **Improvements:**
+    - Refactored `load_images` for efficient memory management using `GPtrArray` and improved error handling.
+    - Encapsulated all global variables into a new `AppState` structure for better code organization.
+    - Enhanced error handling for image loading, preventing application crashes on corrupted or unsupported image files.
+    - Improved user feedback by displaying "No image available" text when images cannot be loaded.
+    - Added a `.gitignore` file to exclude build artifacts and temporary files.
+- **Bug Fixes:**
+    - Addressed potential crashes related to `NULL` pixbuf pointers during image loading and drawing.
 
 ## License
 
@@ -78,9 +103,9 @@ The GNU Affero General Public License (AGPL) is a strong copyleft license that e
 
 ### Additional Terms
 
-1. **Philosophy and Brand Image**: The philosophy and brand image of this software must be maintained in any derivative works. Any changes to the software's core philosophy or brand image require explicit written permission from the original author.
+1.  **Philosophy and Brand Image**: The philosophy and brand image of this software must be maintained in any derivative works. Any changes to the software's core philosophy or brand image require explicit written permission from the original author.
 
-2. **Naming Convention**: The name of the software may not be changed without explicit written permission from the original author. If you create a variation of this software, you must use a suffix to differentiate it from the original. For example, "Photo Gallery Plus" or "Photo Gallery Extended".
+2.  **Naming Convention**: The name of the software may not be changed without explicit written permission from the original author. If you create a variation of this software, you must use a suffix to differentiate it from the original. For example, "Photo Gallery Plus" or "Photo Gallery Extended".
 
 ### No Warranty
 
