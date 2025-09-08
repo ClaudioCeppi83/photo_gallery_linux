@@ -5,12 +5,21 @@
 #include <stdlib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h> // New include for GdkPixbuf functions
 
+void update_thumbnails(AppState *app_state);
+
 // Define the size of the image batch to load at a time
 #define BATCH_SIZE 100
 
 // Forward declarations for thread functions
 static gpointer scan_directory_thread_func(gpointer data);
 static gboolean on_scan_completed(gpointer data);
+typedef struct
+{
+	int index;
+	AppState *app_state;
+} ThumbnailData;
+
+void on_thumbnail_clicked(GtkWidget *button, gpointer user_data);
 
 static void _load_images_sync(AppState *app_state)
 {
@@ -228,8 +237,8 @@ void on_choose_dir_clicked(GtkWidget *widget, gpointer data)
 		}
 
 		// Show loading indicator and disable UI elements
-		// gtk_widget_set_visible(app_state->loading_spinner, TRUE);
-		// gtk_spinner_start((GtkSpinner *)app_state->loading_spinner);
+		gtk_widget_set_visible(app_state->loading_spinner, TRUE);
+		gtk_spinner_start((GtkSpinner *)app_state->loading_spinner);
 		gtk_widget_set_sensitive(app_state->next_button, FALSE);
 		gtk_widget_set_sensitive(app_state->prev_button, FALSE);
 
@@ -272,13 +281,15 @@ static gboolean on_scan_completed(gpointer data)
 	AppState *app_state = (AppState *)data;
 
 	// Hide loading indicator and enable UI elements
-	// gtk_spinner_stop((GtkSpinner *)app_state->loading_spinner);
-	// gtk_widget_set_visible(app_state->loading_spinner, FALSE);
+	gtk_spinner_stop((GtkSpinner *)app_state->loading_spinner);
+	gtk_widget_set_visible(app_state->loading_spinner, FALSE);
 	gtk_widget_set_sensitive(app_state->next_button, TRUE);
 	gtk_widget_set_sensitive(app_state->prev_button, TRUE);
 
 	if (app_state->image_files->len > 0)
 	{
+		gtk_widget_show(app_state->next_button);
+		gtk_widget_show(app_state->prev_button);
 		app_state->current_image_index = 0; // Reset to first image
 		GError *error = NULL;
 		char *image_path = (char *)g_ptr_array_index(app_state->image_files, app_state->current_image_index - app_state->loaded_start_index);
@@ -302,10 +313,88 @@ static gboolean on_scan_completed(gpointer data)
 	}
 	else
 	{
+		gtk_widget_hide(app_state->next_button);
+		gtk_widget_hide(app_state->prev_button);
 		char message[256];
 		sprintf(message, "No images found in the directory: %s", app_state->last_directory);
 		display_message(app_state->window, message);
 	}
+	// Poblar la tira de miniaturas después de cargar las imágenes
+	update_thumbnails(app_state);
 
 	return G_SOURCE_REMOVE; // Remove this source from the main loop
+}
+
+// Función para poblar la tira de miniaturas
+void update_thumbnails(AppState *app_state)
+{
+	if (!app_state || !app_state->thumbnails_box || !app_state->scrolled_window || !app_state->loaded_image_paths)
+	{
+		return;
+	}
+	gtk_container_foreach(GTK_CONTAINER(app_state->thumbnails_box), (GtkCallback)gtk_widget_destroy, NULL);
+	if (app_state->total_image_count == 0)
+	{
+		gtk_widget_hide(app_state->scrolled_window);
+		return;
+	}
+	for (int i = 0; i < app_state->total_image_count; i++)
+	{
+		char *image_path = g_ptr_array_index(app_state->loaded_image_paths, i);
+		if (!image_path)
+			continue;
+		GError *error = NULL;
+		GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(image_path, 80, 80, TRUE, &error);
+		GtkWidget *thumb = gtk_image_new_from_pixbuf(pixbuf);
+		GtkWidget *button = gtk_button_new();
+		gtk_container_add(GTK_CONTAINER(button), thumb);
+		gtk_widget_set_tooltip_text(button, image_path);
+		if (i == app_state->current_image_index)
+		{
+			GtkStyleContext *ctx = gtk_widget_get_style_context(button);
+			gtk_style_context_add_class(ctx, "suggested-action");
+		}
+		ThumbnailData *thumb_data = g_new(ThumbnailData, 1);
+		thumb_data->index = i;
+		thumb_data->app_state = app_state;
+		g_signal_connect(button, "clicked", G_CALLBACK(on_thumbnail_clicked), thumb_data);
+		gtk_box_pack_start(GTK_BOX(app_state->thumbnails_box), button, FALSE, FALSE, 0);
+		if (pixbuf)
+			g_object_unref(pixbuf);
+	}
+	gtk_widget_show_all(app_state->scrolled_window);
+}
+
+// Callback para miniatura
+void on_thumbnail_clicked(GtkWidget *button, gpointer user_data)
+{
+	ThumbnailData *thumb_data = (ThumbnailData *)user_data;
+	if (!thumb_data || !thumb_data->app_state)
+	{
+		g_free(thumb_data);
+		return;
+	}
+	int index = thumb_data->index;
+	AppState *app_state = thumb_data->app_state;
+	app_state->current_image_index = index;
+	// Actualizar imagen principal
+	GError *error = NULL;
+	char *image_path = g_ptr_array_index(app_state->loaded_image_paths, index);
+	GdkPixbuf *new_pixbuf = gdk_pixbuf_new_from_file(image_path, &error);
+	if (new_pixbuf)
+	{
+		if (app_state->current_pixbuf)
+			g_object_unref(app_state->current_pixbuf);
+		app_state->current_pixbuf = new_pixbuf;
+	}
+	else
+	{
+		if (error)
+			g_error_free(error);
+		app_state->current_pixbuf = NULL;
+	}
+	gtk_widget_queue_draw(app_state->drawing_area);
+	// Actualizar borde de selección
+	update_thumbnails(app_state);
+	g_free(thumb_data);
 }

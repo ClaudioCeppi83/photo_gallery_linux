@@ -1,21 +1,24 @@
-# Photo Gallery v0.2.4-alpha
+# Photo Gallery v0.2.5-alpha
 
 ## Overview
 
-Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. This version introduces significant improvements in stability, memory management, and error handling.
+Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. This version introduces significant improvements in stability, memory management, error handling, and user experience.
 
 ## Features
 
-- **Directory Selection**: Users can choose a directory containing images.
-- **Image Navigation**: Users can navigate through images using "Next" and "Previous" buttons.
-- **Image Zoom**: Users can zoom in and out of images.
-- **Message Display**: Displays "No image available" text directly in the viewing area if no images are found or if an image fails to load.
-- **Window Title Update**: The window title is updated to show the current directory.
-- **Dynamic Image Format Support**: Automatically detects and supports all image formats recognized by GdkPixbuf.
-- **Asynchronous Loading**: Scans directories asynchronously to keep the UI responsive.
-- **Enhanced Stability**: Fixed critical memory management bugs that caused the application to crash unexpectedly.
-- **Efficient Memory Management**: Utilizes `GPtrArray` for optimized handling of image file lists.
-- **Modular Code Structure**: Encapsulates application state in a dedicated structure, enhancing code organization and maintainability.
+* **Directory Selection**: Users can choose a directory containing images.
+* **Image Navigation**: Users can navigate through images using "Next" and "Previous" buttons.
+* **Image Zoom**: Users can zoom in and out of images.
+* **Thumbnail Strip**: A modern horizontal strip of image thumbnails is displayed at the bottom of the window, allowing direct selection of any image by clicking its thumbnail.
+* **Selection Highlight**: The currently selected image's thumbnail is visually highlighted for clarity.
+* **Message Display**: Displays "No image available" text directly in the viewing area if no images are found or if an image fails to load.
+* **Window Title Update**: The window title is updated to show the current directory.
+* **Dynamic Image Format Support**: Automatically detects and supports all image formats recognized by GdkPixbuf.
+* **Asynchronous Loading**: Scans directories asynchronously to keep the UI responsive.
+* **Enhanced Stability**: Fixed critical memory management bugs and segmentation faults, especially when selecting directories and navigating images.
+* **Efficient Memory Management**: Utilizes `GPtrArray` for optimized handling of image file lists.
+* **Robust Callbacks**: Navigation and thumbnail selection callbacks now use a dedicated struct to ensure safe access to application state, preventing segmentation faults.
+* **Modular Code Structure**: Encapsulates application state in a dedicated structure, enhancing code organization and maintainability.
 
 ## Installation
 
@@ -48,29 +51,42 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 1.  **Choose Directory**: Click the "Choose Directory" button to select a directory containing images.
     *   **Note**: If no images are found in the selected directory, or if an image cannot be loaded, a "No image available" message will be displayed in the viewing area.
 
-2.  **Navigate Images**: Use the "Next" and "Previous" buttons to navigate through the images.
+2.  **Thumbnail Strip**: Select any image directly by clicking its thumbnail in the strip at the bottom of the window. The currently selected image is highlighted.
 
-3.  **Zoom Images**: Use the "Zoom In" and "Zoom Out" buttons to adjust the image view.
+3.  **Navigate Images**: Use the "Next" and "Previous" buttons to navigate through the images sequentially.
+
+4.  **Zoom Images**: Use the "Zoom In" and "Zoom Out" buttons to adjust the image view.
 
 ## Code Structure
 
-- **`gallery.h`**: Header file containing the `AppState` structure definition and function prototypes for core gallery logic.
-- **`gallery.c`**: Source file containing the main logic for loading images, navigation, and directory selection.
-- **`interface.h`**: Header file for the user interface components and related function prototypes.
-- **`interface.c`**: Source file for handling user interface interactions, including image drawing and zoom functionality.
-- **`main.c`**: Main entry point of the application, responsible for initializing GTK, setting up the `AppState`, and connecting signals.
-- **`Makefile`**: Makefile for compiling the program.
+* **`gallery.h`**: Header file containing the `AppState` structure definition and function prototypes for core gallery logic.
+* **`gallery.c`**: Source file containing the main logic for loading images, navigation, directory selection, and thumbnail strip management. Includes robust callback handling for navigation and thumbnail selection.
+* **`interface.h`**: Header file for the user interface components and related function prototypes.
+* **`interface.c`**: Source file for handling user interface interactions, including image drawing and zoom functionality.
+* **`main.c`**: Main entry point of the application, responsible for initializing GTK, setting up the `AppState`, and connecting signals.
+* **`Makefile`**: Makefile for compiling the program.
 
 ## Known Issues
 
-- **Resolved**: The critical issue causing the application to crash upon selecting a directory has been fixed.
-- Initial scanning of very large directories might still cause a brief delay, although the UI remains responsive due to asynchronous processing.
+* **Resolved**: The critical issue causing the application to crash upon selecting a directory and segmentation faults during navigation/thumbnail selection have been fixed by robust pointer management and callback design.
+* Initial scanning of very large directories might still cause a brief delay, although the UI remains responsive due to asynchronous processing.
 
 ## Future Work
 
 - Implement a directory tree view for easier navigation.
 
 ## Changelog
+
+### v0.2.5-alpha (2025-09-08)
+
+- **Features:**
+    - Added a modern horizontal thumbnail strip at the bottom of the window for direct image selection.
+    - Thumbnails are highlighted to indicate the currently selected image.
+- **Improvements:**
+    - Navigation and thumbnail selection callbacks now use a dedicated struct for safe access to application state, preventing segmentation faults.
+    - Improved user experience and UI/UX consistency with GNOME/Ubuntu guidelines.
+- **Bug Fixes:**
+    - Fixed segmentation fault when clicking thumbnails or navigating images due to unsafe pointer access.
 
 ### v0.2.4-alpha (2025-09-08)
 
