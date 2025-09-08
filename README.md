@@ -1,8 +1,8 @@
-# Photo Gallery v0.2.1-alpha
+# Photo Gallery v0.2.4-alpha
 
 ## Overview
 
-Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. This version introduces significant improvements in memory management, error handling, and image format flexibility, along with a more robust code structure.
+Photo Gallery is a simple GTK-based application that allows users to browse images stored in a specified directory. This version introduces significant improvements in stability, memory management, and error handling.
 
 ## Features
 
@@ -12,7 +12,8 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 - **Message Display**: Displays "No image available" text directly in the viewing area if no images are found or if an image fails to load.
 - **Window Title Update**: The window title is updated to show the current directory.
 - **Dynamic Image Format Support**: Automatically detects and supports all image formats recognized by GdkPixbuf.
-- **Improved Error Handling**: Robust error checking for image loading operations, preventing crashes and providing informative warnings.
+- **Asynchronous Loading**: Scans directories asynchronously to keep the UI responsive.
+- **Enhanced Stability**: Fixed critical memory management bugs that caused the application to crash unexpectedly.
 - **Efficient Memory Management**: Utilizes `GPtrArray` for optimized handling of image file lists.
 - **Modular Code Structure**: Encapsulates application state in a dedicated structure, enhancing code organization and maintainability.
 
@@ -26,19 +27,10 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 
 ### Build Instructions
 
-1.  **Clone the repository** (or initialize a new one if starting fresh):
+1.  **Clone the repository**:
     ```sh
-    git clone git@github.com:ClaudioCeppi83/photo_gallery_linux.git # If cloning
+    git clone https://github.com/ClaudioCeppi83/photo_gallery_linux.git
     cd photo_gallery_linux
-    ```
-    If you are starting a new repository, you would initialize it:
-    ```sh
-    git init
-    git add .
-    git commit -m "Initial commit"
-    git branch -M main
-    git remote add origin <YOUR_REPOSITORY_URL>
-    git push -u origin main
     ```
 
 2.  **Compile the program**:
@@ -51,7 +43,7 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
     ./photo_gallery
     ```
 
-## Usage:
+## Usage
 
 1.  **Choose Directory**: Click the "Choose Directory" button to select a directory containing images.
     *   **Note**: If no images are found in the selected directory, or if an image cannot be loaded, a "No image available" message will be displayed in the viewing area.
@@ -60,24 +52,43 @@ Photo Gallery is a simple GTK-based application that allows users to browse imag
 
 3.  **Zoom Images**: Use the "Zoom In" and "Zoom Out" buttons to adjust the image view.
 
-## Code Structure:
+## Code Structure
 
 - **`gallery.h`**: Header file containing the `AppState` structure definition and function prototypes for core gallery logic.
-- **`gallery.c`**: Source file containing the main logic for loading images (with dynamic format detection and efficient memory management), navigation, and directory selection.
+- **`gallery.c`**: Source file containing the main logic for loading images, navigation, and directory selection.
 - **`interface.h`**: Header file for the user interface components and related function prototypes.
-- **`interface.c`**: Source file for handling user interface interactions, including image drawing (with "No image available" display) and zoom functionality.
+- **`interface.c`**: Source file for handling user interface interactions, including image drawing and zoom functionality.
 - **`main.c`**: Main entry point of the application, responsible for initializing GTK, setting up the `AppState`, and connecting signals.
 - **`Makefile`**: Makefile for compiling the program.
 
-## Known Issues:
+## Known Issues
 
-- The application currently does not handle large directories efficiently.
+- **Resolved**: The critical issue causing the application to crash upon selecting a directory has been fixed.
+- Initial scanning of very large directories might still cause a brief delay, although the UI remains responsive due to asynchronous processing.
 
-## Future Work:
+## Future Work
 
 - Implement a directory tree view for easier navigation.
 
 ## Changelog
+
+### v0.2.4-alpha (2025-09-08)
+
+- **Bug Fixes:**
+    - Fixed a critical segmentation fault that occurred when selecting a directory, caused by improper memory management during image loading and application shutdown.
+    - Corrected compilation errors by ensuring all necessary members of the `AppState` struct were accessible.
+- **Improvements:**
+    - Significantly improved application stability and reliability.
+
+### v0.2.3-alpha (2025-09-08)
+
+- **Improvements:**
+    - Implemented asynchronous directory scanning to improve UI responsiveness when selecting large directories. A loading spinner is now displayed during the scan.
+
+### v0.2.2-alpha (2025-09-08)
+
+- **Bug Fixes:**
+    - Resolved issue where application failed to recognize and load image files due to incorrect GHashTable key management in `load_images` function.
 
 ### v0.2.1-alpha (2025-09-08)
 

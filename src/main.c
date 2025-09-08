@@ -5,9 +5,13 @@
 void free_app_state(gpointer data)
 {
 	AppState *app_state = (AppState *)data;
+	if (app_state->loaded_image_paths)
+	{
+		g_ptr_array_free(app_state->loaded_image_paths, TRUE);
+	}
 	if (app_state->image_files)
 	{
-		g_ptr_array_free(app_state->image_files, TRUE);
+		g_ptr_array_free(app_state->image_files, FALSE);
 	}
 	if (app_state->last_directory)
 	{
@@ -109,23 +113,13 @@ int main(int argc, char *argv[])
 	g_signal_connect(button_zoom_out, "clicked", G_CALLBACK(on_zoom_out_clicked), app_state);
 	gtk_box_pack_start(GTK_BOX(app_state->box), button_zoom_out, FALSE, FALSE, 0);
 
-	load_images(app_state);
-	if (app_state->image_files->len > 0)
-	{
-		GError *error = NULL;
-	app_state->current_pixbuf = gdk_pixbuf_new_from_file((char *)g_ptr_array_index(app_state->image_files, app_state->current_image_index), &error);
-	if (error != NULL)
-	{
-		g_warning("Error loading image: %s", error->message);
-		g_error_free(error);
-		app_state->current_pixbuf = NULL; // Ensure it's NULL if loading failed
-	}
-		gtk_widget_queue_draw(app_state->drawing_area);
-	}
-	else
-	{
-		g_print("No images found in the directory.\n");
-	}
+	// Initialize loading spinner and assign buttons to app_state
+	app_state->loading_spinner = gtk_spinner_new();
+	gtk_box_pack_start(GTK_BOX(app_state->box), app_state->loading_spinner, FALSE, FALSE, 0);
+	gtk_widget_set_visible(app_state->loading_spinner, FALSE); // Initially hidden
+
+	app_state->next_button = button_next;
+	app_state->prev_button = button_prev;
 
 	gtk_widget_show_all(app_state->window);
 	gtk_main();
