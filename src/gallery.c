@@ -347,6 +347,7 @@ void update_thumbnails(AppState *app_state)
 		GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(image_path, 80, 80, TRUE, &error);
 		GtkWidget *thumb = gtk_image_new_from_pixbuf(pixbuf);
 		GtkWidget *button = gtk_button_new();
+		gtk_style_context_add_class(gtk_widget_get_style_context(button), "thumbnail-button");
 		gtk_container_add(GTK_CONTAINER(button), thumb);
 		gtk_widget_set_tooltip_text(button, image_path);
 		if (i == app_state->current_image_index)

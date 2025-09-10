@@ -1,0 +1,88 @@
+/*
+ * style.css
+ */
+
+/* Main window background */
+.window {
+	background-color: #2e3436;
+}
+
+/* Header bar styling */
+headerbar {
+	background-color: #3e4446;
+	border-bottom: 1px solid #555555;
+	padding: 0;
+	min-height: 40px;
+}
+
+/* Header bar buttons */
+headerbar button {
+	background-color: transparent;
+	border: none;
+	padding: 0 10px;
+}
+
+headerbar button:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main content area */
+.drawing-area {
+	background-color: #2e3436;
+}
+
+/* Navigation buttons styling on the overlay */
+.nav-button {
+	background-color: rgba(0, 0, 0, 0.4);
+	border: none;
+	color: #cccccc;
+	padding: 20px;
+	border-radius: 50%;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.nav-button:hover {
+	background-color: rgba(0, 0, 0, 0.6);
+	color: #ffffff;
+}
+
+/* Thumbnail strip styling */
+scrolledwindow {
+	background-color: #333333;
+	border-top: 1px solid #555555;
+	padding: 10px 0;
+}
+
+box#thumbnails_box {
+	background-color: #333333;
+	padding: 0 5px;
+	margin: 0;
+}
+
+/* Thumbnail buttons */
+button.thumbnail-button {
+	background-color: transparent;
+	border: 2px solid transparent;
+	padding: 4px;
+	border-radius: 4px;
+	transition: border-color 0.2s ease-in-out;
+}
+
+button.thumbnail-button:hover {
+	border-color: #729fcf;
+}
+
+/* Highlight for selected thumbnail */
+button.suggested-action.thumbnail-button {
+	border-color: #4a90d9;
+}
+
+/* Style for the zoom buttons' icons and labels */
+.zoom-button {
+	background-color: transparent;
+}
+
+.zoom-button label {
+	color: #cccccc;
+	font-weight: bold;
+}

@@ -82,27 +82,49 @@ int main(int argc, char *argv[])
 	gtk_window_set_default_size(GTK_WINDOW(app_state->window), window_width, window_height);
 	g_signal_connect(app_state->window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	g_object_set_data_full(G_OBJECT(app_state->window), "app_state", app_state, free_app_state);
+	gtk_window_set_decorated(GTK_WINDOW(app_state->window), FALSE);
+
+	// Load the CSS file
+	GtkCssProvider *provider = gtk_css_provider_new();
+	GdkScreen *screen = gdk_screen_get_default();
+	gtk_css_provider_load_from_path(provider, "style.css", NULL);
+	gtk_style_context_add_provider_for_screen(screen,
+																GTK_STYLE_PROVIDER(provider),
+																GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	// Create HeaderBar
 	GtkWidget *header_bar = gtk_header_bar_new();
 	gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header_bar), TRUE);
-	gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Photo Gallery");
+	gtk_header_bar_set_title(GTK_HEADER_BAR(header_bar), "Ubuntw");
 	gtk_window_set_titlebar(GTK_WINDOW(app_state->window), header_bar);
 
-	// Add "Choose Directory" button to the header bar
+	// Add icon to header bar (at the start)
+	GtkWidget *icon = gtk_image_new_from_icon_name("ubuntu-logo-icon-symbolic", GTK_ICON_SIZE_MENU);
+	gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), icon);
+
+	// Add "Choose Directory" and "More" buttons to the end of the header bar
+	GtkWidget *button_more = gtk_button_new_from_icon_name("view-list-symbolic", GTK_ICON_SIZE_BUTTON);
+	gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), button_more);
 	GtkWidget *button_choose_dir = gtk_button_new_from_icon_name("folder-open-symbolic", GTK_ICON_SIZE_BUTTON);
 	g_signal_connect(button_choose_dir, "clicked", G_CALLBACK(on_choose_dir_clicked), app_state);
-	gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), button_choose_dir);
+	gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), button_choose_dir);
 
-	// Add "Zoom" buttons to the header bar
-	GtkWidget *zoom_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	// Create a central box for the zoom controls
+	GtkWidget *center_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	
+	// Add "Zoom" buttons to the central box
 	GtkWidget *button_zoom_in = gtk_button_new_from_icon_name("zoom-in-symbolic", GTK_ICON_SIZE_BUTTON);
 	GtkWidget *button_zoom_out = gtk_button_new_from_icon_name("zoom-out-symbolic", GTK_ICON_SIZE_BUTTON);
 	g_signal_connect(button_zoom_in, "clicked", G_CALLBACK(on_zoom_in_clicked), app_state);
 	g_signal_connect(button_zoom_out, "clicked", G_CALLBACK(on_zoom_out_clicked), app_state);
-	gtk_box_pack_start(GTK_BOX(zoom_box), button_zoom_in, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(zoom_box), button_zoom_out, FALSE, FALSE, 0);
-	gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), zoom_box);
+
+	gtk_box_pack_start(GTK_BOX(center_box), gtk_label_new("Zoop-in"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(center_box), button_zoom_in, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(center_box), gtk_label_new("Zoop-out"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(center_box), button_zoom_out, FALSE, FALSE, 0);
+
+    // Set the central box as the custom title area
+	gtk_header_bar_set_custom_title(GTK_HEADER_BAR(header_bar), center_box);
 
 	// Crear la caja vertical principal
 	GtkWidget *main_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -128,6 +150,10 @@ int main(int argc, char *argv[])
 	gtk_widget_set_halign(app_state->next_button, GTK_ALIGN_END);
 	gtk_widget_set_valign(app_state->prev_button, GTK_ALIGN_CENTER);
 	gtk_widget_set_halign(app_state->prev_button, GTK_ALIGN_START);
+
+	// Assign custom CSS classes to buttons
+	gtk_style_context_add_class(gtk_widget_get_style_context(app_state->next_button), "nav-button");
+	gtk_style_context_add_class(gtk_widget_get_style_context(app_state->prev_button), "nav-button");
 
 	gtk_overlay_add_overlay(GTK_OVERLAY(app_state->overlay), app_state->next_button);
 	gtk_overlay_add_overlay(GTK_OVERLAY(app_state->overlay), app_state->prev_button);
