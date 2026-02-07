@@ -1,8 +1,16 @@
-# Object files
+# Rust artifacts
+target/
+**/*.rs.bk
+
+# C/C++ Artifacts (Legacy)
 *.o
-
-# Executable
+*.so
+*.a
 photo_gallery
+build/
 
-# Context Image
-# photoGallery_Gemini_Generated_Image.png
+# Configuration and temporary files
+last_directory.conf
+.DS_Store
+*.swp
+*~

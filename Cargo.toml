@@ -1,0 +1,13 @@
+[package]
+name = "photo_gallery_rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gtk4 = { version = "0.9", package = "gtk4" }
+libadwaita = { version = "0.7", package = "libadwaita" }
+gdk-pixbuf = "0.20"
+gio = "0.20"
+glib = "0.20"
+walkdir = "2.5"
+tokio = { version = "1.0", features = ["full"] }

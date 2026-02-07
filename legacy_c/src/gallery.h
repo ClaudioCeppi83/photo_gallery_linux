@@ -2,6 +2,7 @@
 #define GALLERY_H
 
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 // Forward declaration to avoid circular dependencies
 typedef struct _AppState AppState;
@@ -12,7 +13,7 @@ typedef struct _AppState AppState;
 struct _AppState
 {
 	GtkWidget *window;
-	GtkWidget *drawing_area;
+	GtkWidget *picture;
 	GtkWidget *overlay;
 	GtkWidget *scrolled_window; // Contenedor desplazable para las miniaturas
 	GtkWidget *thumbnails_box;	// Caja horizontal para las miniaturas
